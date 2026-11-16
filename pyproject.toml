@@ -1,0 +1,175 @@
+[project]
+name = "recover-assess"
+version = "0.1.0"
+description = "Read-only CLI that assesses SharePoint sites from Microsoft Graph evidence and recommends a recovery action."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "recover-assess maintainers" }]
+dependencies = [
+    "httpx2~=2.16.0",
+    "tenacity~=9.2.1",
+    "pydantic~=2.14.3",
+    "pydantic-settings[yaml]~=2.16.3",
+    "pyyaml~=6.0.3",
+    "typer~=0.29.1",
+]
+
+[project.scripts]
+recover-assess = "recover_assess.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest~=9.2.0",
+    "pytest-asyncio~=1.5.0",
+    "hypothesis~=6.170",
+    "ruff~=0.17.5",
+    "mypy~=2.4.1",
+    "import-linter~=2.16",
+    "jsonschema~=4.26.0",
+    "types-pyyaml",
+    "types-jsonschema",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.8,<0.14"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "recover_assess"
+module-root = "src"
+source-include = [
+    "schemas/**",
+    "config/**",
+    "scripts/**",
+    "tests/**",
+    "recover-assess.example.yaml",
+    "uv.lock",
+    ".python-version",
+]
+source-exclude = [
+    ".planning",
+    ".claude",
+    "out",
+    "docs/private",
+    "*.pem",
+    "*.pfx",
+    "recover-assess.yaml",
+]
+
+[tool.pytest.ini_options]
+minversion = "9.0"
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = ["error"]
+markers = [
+    "slow: subprocess or build tests",
+    "needs_uv: requires the uv executable",
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["src", "scripts", "tests"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests", "scripts"]
+extend-exclude = [".planning", ".claude", "out"]
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "SIM", "RUF", "ASYNC", "PTH", "TID", "DTZ", "T20", "PT", "C4"]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"requests".msg = "network I/O only via core/graph.py"
+"urllib.request".msg = "network I/O only via core/graph.py"
+"http.client".msg = "network I/O only via core/graph.py"
+"socket".msg = "network I/O only via core/graph.py"
+"time.sleep".msg = "use the injected Clock"
+"asyncio.sleep".msg = "use the injected Clock"
+
+[tool.ruff.lint.per-file-ignores]
+"src/recover_assess/core/clock.py" = ["TID251"]
+"src/recover_assess/cli.py" = ["T20"]
+"scripts/*" = ["T20", "S603", "S607"]
+"tests/**" = ["S101", "S105", "S106", "S603", "S607"]
+"tests/fakes/**" = ["TID251", "ASYNC"]
+
+[tool.importlinter]
+root_package = "recover_assess"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+id = "core-not-cli"
+name = "core never imports cli"
+type = "forbidden"
+source_modules = ["recover_assess.core"]
+forbidden_modules = ["recover_assess.cli"]
+
+[[tool.importlinter.contracts]]
+id = "httpx2-only-graph-providers"
+name = "httpx2 only in graph and providers"
+type = "forbidden"
+source_modules = ["recover_assess"]
+forbidden_modules = ["httpx2", "httpx", "requests", "msal", "azure", "aiohttp"]
+unmatched_ignore_imports_alerting = "none"
+ignore_imports = [
+    "recover_assess.core.graph -> httpx2",
+    "recover_assess.core.providers.** -> httpx2",
+]
+
+[[tool.importlinter.contracts]]
+id = "llm-sdks-only-providers"
+name = "LLM SDKs only in providers"
+type = "forbidden"
+source_modules = ["recover_assess"]
+forbidden_modules = ["openai", "anthropic", "boto3"]
+unmatched_ignore_imports_alerting = "none"
+ignore_imports = [
+    "recover_assess.core.providers.** -> openai",
+    "recover_assess.core.providers.** -> anthropic",
+]
+
+[[tool.importlinter.contracts]]
+id = "pure-stages-no-network"
+name = "score/agent/report import no network libs"
+type = "forbidden"
+source_modules = [
+    "recover_assess.core.score",
+    "recover_assess.core.agent",
+    "recover_assess.core.report",
+]
+forbidden_modules = [
+    "httpx2",
+    "httpx",
+    "requests",
+    "msal",
+    "azure",
+    "openai",
+    "anthropic",
+    "boto3",
+    "recover_assess.core.graph",
+]
+
+[[tool.importlinter.contracts]]
+id = "cli-libs-only-cli"
+name = "typer and rich only in cli"
+type = "forbidden"
+source_modules = ["recover_assess.core"]
+forbidden_modules = ["typer", "rich"]

@@ -1,0 +1,20 @@
+# Operator and client config, run output, secrets (D-12, D-13)
+recover-assess.yaml
+out/
+*.pem
+*.pfx
+*token_cache*
+docs/private/
+
+# Local working drafts kept out of the repository
+/AI-Ready SharePoint Framework & Enablement Playbook (Draft).md
+/Recover Assessment Collector Build Spec (Step 1).md
+
+# Tooling and build output
+.venv/
+dist/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+__pycache__/

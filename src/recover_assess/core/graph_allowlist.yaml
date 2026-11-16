@@ -1,0 +1,63 @@
+# Packaged, locked Graph allow-list (D-08). Not operator-editable: there is no
+# config or environment key for it. Every new endpoint is a reviewed code change
+# and carries the Microsoft Learn page that documents it.
+#
+# Template syntax: "{name}" matches exactly one ID-shaped path segment; the only
+# multi-segment placeholder is "{+path}" (site_by_path, last segment only);
+# "{hostname}:" matches a dotted host name followed by a colon. No wildcards.
+version: 1
+entries:
+  - id: site_by_id
+    method: GET
+    template: /sites/{site-id}
+    learn_url: https://learn.microsoft.com/en-us/graph/api/site-get?view=graph-rest-1.0
+  - id: site_by_path
+    method: GET
+    template: /sites/{hostname}:/{+path}
+    learn_url: https://learn.microsoft.com/en-us/graph/api/site-get?view=graph-rest-1.0
+  - id: subsites
+    method: GET
+    template: /sites/{site-id}/sites
+    learn_url: https://learn.microsoft.com/en-us/graph/api/site-list-subsites?view=graph-rest-1.0
+  - id: lists
+    method: GET
+    template: /sites/{site-id}/lists
+    learn_url: https://learn.microsoft.com/en-us/graph/api/list-list?view=graph-rest-1.0
+  # The drive-get page documents /sites/{site-id}/drive but not this list-scoped path;
+  # the list resource page documents the "drive" relationship of a document library.
+  - id: list_drive
+    method: GET
+    template: /sites/{site-id}/lists/{list-id}/drive
+    learn_url: https://learn.microsoft.com/en-us/graph/api/resources/list?view=graph-rest-1.0
+  - id: columns
+    method: GET
+    template: /sites/{site-id}/lists/{list-id}/columns
+    learn_url: https://learn.microsoft.com/en-us/graph/api/list-list-columns?view=graph-rest-1.0
+  - id: content_types
+    method: GET
+    template: /sites/{site-id}/lists/{list-id}/contentTypes
+    learn_url: https://learn.microsoft.com/en-us/graph/api/list-list-contenttypes?view=graph-rest-1.0
+  - id: list_items
+    method: GET
+    template: /sites/{site-id}/lists/{list-id}/items
+    learn_url: https://learn.microsoft.com/en-us/graph/api/listitem-list?view=graph-rest-1.0
+  - id: drive_delta
+    method: GET
+    template: /drives/{drive-id}/root/delta
+    learn_url: https://learn.microsoft.com/en-us/graph/api/driveitem-delta?view=graph-rest-1.0
+  - id: item_permissions
+    method: GET
+    template: /drives/{drive-id}/items/{item-id}/permissions
+    learn_url: https://learn.microsoft.com/en-us/graph/api/driveitem-list-permissions?view=graph-rest-1.0
+  - id: site_drive
+    method: GET
+    template: /sites/{site-id}/drive
+    learn_url: https://learn.microsoft.com/en-us/graph/api/drive-get?view=graph-rest-1.0
+  - id: group_owners
+    method: GET
+    template: /groups/{group-id}/owners
+    learn_url: https://learn.microsoft.com/en-us/graph/api/group-list-owners?view=graph-rest-1.0
+  - id: batch
+    method: POST
+    template: /$batch
+    learn_url: https://learn.microsoft.com/en-us/graph/json-batching

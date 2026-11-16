@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "tool_version": "0.1.0",
+  "run_id": "run-demo",
+  "collected_at": "2026-01-02T03:04:05Z",
+  "status": "partial",
+  "privacy": {
+    "path_mode": "full",
+    "contributors": "email"
+  },
+  "collect_limits": {
+    "max_items_per_library": 50000,
+    "fill_rate_sample": 500,
+    "permission_checks_per_library": 200,
+    "max_file_mb": 10,
+    "sample_size": 15
+  },
+  "sections": {
+    "site": {
+      "status": "not_run",
+      "reason": null
+    },
+    "libraries": {
+      "status": "not_run",
+      "reason": null
+    },
+    "lists": {
+      "status": "not_run",
+      "reason": null
+    },
+    "exposure": {
+      "status": "not_run",
+      "reason": null
+    },
+    "ownership": {
+      "status": "not_run",
+      "reason": null
+    },
+    "sample_candidates": {
+      "status": "not_run",
+      "reason": null
+    },
+    "sam": {
+      "status": "not_run",
+      "reason": null
+    }
+  },
+  "input": {
+    "raw": "https://contoso.sharepoint.com/sites/example",
+    "normalized": null,
+    "label": null,
+    "business_unit": null,
+    "owner_hint": null,
+    "priority": null,
+    "extra": {}
+  },
+  "site": null,
+  "libraries": [],
+  "lists": [],
+  "exposure_total": {
+    "status": "not_run",
+    "checked": null,
+    "items_with_anyone_link": null,
+    "items_with_org_link": null,
+    "items_with_people_link": null,
+    "items_with_direct_grants": null,
+    "items_with_guest_or_external": null,
+    "items_with_eeeu": null,
+    "items_differing_from_root": null,
+    "caller_is_owner": null
+  },
+  "ownership": {
+    "owners": [],
+    "owners_source": "unavailable",
+    "active_contributors_90d": null,
+    "top_contributors": [],
+    "owner_hint_matched": null
+  },
+  "sample_candidates": [],
+  "sam": null,
+  "graph_stats": {
+    "requests": 0,
+    "batches": 0,
+    "throttled": 0,
+    "retries": 0,
+    "seconds": 0.0
+  },
+  "warnings": []
+}

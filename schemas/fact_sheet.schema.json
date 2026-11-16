@@ -1,0 +1,1796 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "AgeBuckets": {
+      "additionalProperties": false,
+      "description": "Share of files by age of last modification.",
+      "properties": {
+        "lt_1y": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Lt 1Y",
+          "type": "number"
+        },
+        "y1_3": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Y1 3",
+          "type": "number"
+        },
+        "gt_3y": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Gt 3Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lt_1y",
+        "y1_3",
+        "gt_3y"
+      ],
+      "title": "AgeBuckets",
+      "type": "object"
+    },
+    "CategoryShares": {
+      "additionalProperties": false,
+      "description": "Share of files per content category; each share is 0..1.",
+      "properties": {
+        "word": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Word",
+          "type": "number"
+        },
+        "pdf": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Pdf",
+          "type": "number"
+        },
+        "excel": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Excel",
+          "type": "number"
+        },
+        "powerpoint": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Powerpoint",
+          "type": "number"
+        },
+        "email": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Email",
+          "type": "number"
+        },
+        "image": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Image",
+          "type": "number"
+        },
+        "text": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Text",
+          "type": "number"
+        },
+        "archive": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Archive",
+          "type": "number"
+        },
+        "other": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Other",
+          "type": "number"
+        }
+      },
+      "required": [
+        "word",
+        "pdf",
+        "excel",
+        "powerpoint",
+        "email",
+        "image",
+        "text",
+        "archive",
+        "other"
+      ],
+      "title": "CategoryShares",
+      "type": "object"
+    },
+    "CollectLimits": {
+      "additionalProperties": false,
+      "description": "The caps and sample sizes this run was collected under.",
+      "properties": {
+        "max_items_per_library": {
+          "minimum": 1,
+          "title": "Max Items Per Library",
+          "type": "integer"
+        },
+        "fill_rate_sample": {
+          "minimum": 1,
+          "title": "Fill Rate Sample",
+          "type": "integer"
+        },
+        "permission_checks_per_library": {
+          "minimum": 1,
+          "title": "Permission Checks Per Library",
+          "type": "integer"
+        },
+        "max_file_mb": {
+          "minimum": 1,
+          "title": "Max File Mb",
+          "type": "integer"
+        },
+        "sample_size": {
+          "minimum": 0,
+          "title": "Sample Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_items_per_library",
+        "fill_rate_sample",
+        "permission_checks_per_library",
+        "max_file_mb",
+        "sample_size"
+      ],
+      "title": "CollectLimits",
+      "type": "object"
+    },
+    "Column": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "display_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Display Name"
+        },
+        "type": {
+          "enum": [
+            "text",
+            "choice",
+            "dateTime",
+            "number",
+            "boolean",
+            "personOrGroup",
+            "lookup",
+            "term",
+            "calculated",
+            "other"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "required": {
+          "title": "Required",
+          "type": "boolean"
+        },
+        "custom": {
+          "title": "Custom",
+          "type": "boolean"
+        },
+        "choices": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Choices",
+          "type": "array"
+        },
+        "term_set_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Term Set Id"
+        },
+        "fill_rate": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fill Rate"
+        }
+      },
+      "required": [
+        "name",
+        "display_name",
+        "type",
+        "required",
+        "custom",
+        "choices",
+        "term_set_id",
+        "fill_rate"
+      ],
+      "title": "Column",
+      "type": "object"
+    },
+    "Contributor": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "files_modified_365d": {
+          "minimum": 0,
+          "title": "Files Modified 365D",
+          "type": "integer"
+        },
+        "last": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Last"
+        }
+      },
+      "required": [
+        "id",
+        "files_modified_365d",
+        "last"
+      ],
+      "title": "Contributor",
+      "type": "object"
+    },
+    "Coverage": {
+      "additionalProperties": false,
+      "description": "How much of the library the enumeration actually counted.",
+      "properties": {
+        "counted_items": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Counted Items"
+        },
+        "counted_bytes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Counted Bytes"
+        },
+        "root_bytes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Root Bytes"
+        },
+        "ratio": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ratio"
+        }
+      },
+      "required": [
+        "counted_items",
+        "counted_bytes",
+        "root_bytes",
+        "ratio"
+      ],
+      "title": "Coverage",
+      "type": "object"
+    },
+    "Depth": {
+      "additionalProperties": false,
+      "description": "Folder depth: deepest level and the 50th and 90th percentiles.",
+      "properties": {
+        "max": {
+          "minimum": 0,
+          "title": "Max",
+          "type": "integer"
+        },
+        "p50": {
+          "minimum": 0,
+          "title": "P50",
+          "type": "integer"
+        },
+        "p90": {
+          "minimum": 0,
+          "title": "P90",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max",
+        "p50",
+        "p90"
+      ],
+      "title": "Depth",
+      "type": "object"
+    },
+    "ExposureTotal": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "ok",
+            "partial_caller_scoped",
+            "unknown",
+            "forbidden",
+            "not_run",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "checked": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Checked"
+        },
+        "items_with_anyone_link": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With Anyone Link"
+        },
+        "items_with_org_link": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With Org Link"
+        },
+        "items_with_people_link": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With People Link"
+        },
+        "items_with_direct_grants": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With Direct Grants"
+        },
+        "items_with_guest_or_external": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With Guest Or External"
+        },
+        "items_with_eeeu": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With Eeeu"
+        },
+        "items_differing_from_root": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items Differing From Root"
+        },
+        "caller_is_owner": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Caller Is Owner"
+        }
+      },
+      "required": [
+        "status",
+        "checked",
+        "items_with_anyone_link",
+        "items_with_org_link",
+        "items_with_people_link",
+        "items_with_direct_grants",
+        "items_with_guest_or_external",
+        "items_with_eeeu",
+        "items_differing_from_root",
+        "caller_is_owner"
+      ],
+      "title": "ExposureTotal",
+      "type": "object"
+    },
+    "ExtensionShare": {
+      "additionalProperties": false,
+      "properties": {
+        "ext": {
+          "title": "Ext",
+          "type": "string"
+        },
+        "share": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Share",
+          "type": "number"
+        }
+      },
+      "required": [
+        "ext",
+        "share"
+      ],
+      "title": "ExtensionShare",
+      "type": "object"
+    },
+    "FolderPattern": {
+      "additionalProperties": false,
+      "description": "A naming pattern recognised at one folder depth.",
+      "properties": {
+        "depth": {
+          "maximum": 4,
+          "minimum": 1,
+          "title": "Depth",
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "year",
+            "fiscal_year",
+            "quarter",
+            "month",
+            "date",
+            "numeric_id",
+            "categorical"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "share": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Share",
+          "type": "number"
+        },
+        "distinct": {
+          "minimum": 0,
+          "title": "Distinct",
+          "type": "integer"
+        },
+        "examples": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "title": "Examples",
+          "type": "array"
+        }
+      },
+      "required": [
+        "depth",
+        "kind",
+        "share",
+        "distinct",
+        "examples"
+      ],
+      "title": "FolderPattern",
+      "type": "object"
+    },
+    "GraphStats": {
+      "additionalProperties": false,
+      "description": "Counters for the Graph traffic of one run, in the order of the spec example.",
+      "properties": {
+        "requests": {
+          "minimum": 0,
+          "title": "Requests",
+          "type": "integer"
+        },
+        "batches": {
+          "minimum": 0,
+          "title": "Batches",
+          "type": "integer"
+        },
+        "throttled": {
+          "minimum": 0,
+          "title": "Throttled",
+          "type": "integer"
+        },
+        "retries": {
+          "minimum": 0,
+          "title": "Retries",
+          "type": "integer"
+        },
+        "seconds": {
+          "minimum": 0,
+          "title": "Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "requests",
+        "batches",
+        "throttled",
+        "retries",
+        "seconds"
+      ],
+      "title": "GraphStats",
+      "type": "object"
+    },
+    "InputRecord": {
+      "additionalProperties": false,
+      "description": "The input row this fact sheet was collected for.",
+      "properties": {
+        "raw": {
+          "title": "Raw",
+          "type": "string"
+        },
+        "normalized": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Normalized"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Label"
+        },
+        "business_unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Business Unit"
+        },
+        "owner_hint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Owner Hint"
+        },
+        "priority": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Priority"
+        },
+        "extra": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Extra",
+          "type": "object"
+        }
+      },
+      "required": [
+        "raw",
+        "normalized",
+        "label",
+        "business_unit",
+        "owner_hint",
+        "priority",
+        "extra"
+      ],
+      "title": "InputRecord",
+      "type": "object"
+    },
+    "LargestFile": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "bytes": {
+          "minimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "bytes"
+      ],
+      "title": "LargestFile",
+      "type": "object"
+    },
+    "Library": {
+      "additionalProperties": false,
+      "description": "One document library (or pages library) and the evidence collected from it.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "drive_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Drive Id"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "library",
+            "pages"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Files"
+        },
+        "folders": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Folders"
+        },
+        "bytes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Bytes"
+        },
+        "truncated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Truncated"
+        },
+        "truncated_reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "cap",
+                "time",
+                "throttle",
+                "resync"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Truncated Reason"
+        },
+        "coverage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Coverage"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "path_unresolved": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Path Unresolved"
+        },
+        "depth": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Depth"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "categories": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CategoryShares"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "top_extensions": {
+          "items": {
+            "$ref": "#/$defs/ExtensionShare"
+          },
+          "title": "Top Extensions",
+          "type": "array"
+        },
+        "age": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AgeBuckets"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_by_year": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Created By Year",
+          "type": "object"
+        },
+        "last_activity": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Last Activity"
+        },
+        "last_activity_sources": {
+          "items": {
+            "enum": [
+              "file",
+              "list",
+              "page",
+              "drive"
+            ],
+            "type": "string"
+          },
+          "title": "Last Activity Sources",
+          "type": "array"
+        },
+        "largest_files": {
+          "items": {
+            "$ref": "#/$defs/LargestFile"
+          },
+          "title": "Largest Files",
+          "type": "array"
+        },
+        "duplicate_rate": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Rate"
+        },
+        "hash_coverage": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Hash Coverage"
+        },
+        "columns": {
+          "items": {
+            "$ref": "#/$defs/Column"
+          },
+          "title": "Columns",
+          "type": "array"
+        },
+        "mean_fill_rate": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mean Fill Rate"
+        },
+        "fill_rate_method": {
+          "anyOf": [
+            {
+              "const": "first_n",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fill Rate Method"
+        },
+        "fill_rate_sample": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fill Rate Sample"
+        },
+        "content_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Content Types",
+          "type": "array"
+        },
+        "default_content_types_only": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Default Content Types Only"
+        },
+        "folder_patterns": {
+          "items": {
+            "$ref": "#/$defs/FolderPattern"
+          },
+          "title": "Folder Patterns",
+          "type": "array"
+        },
+        "exposure": {
+          "$ref": "#/$defs/LibraryExposure"
+        }
+      },
+      "required": [
+        "id",
+        "drive_id",
+        "name",
+        "kind",
+        "files",
+        "folders",
+        "bytes",
+        "truncated",
+        "truncated_reason",
+        "coverage",
+        "path_unresolved",
+        "depth",
+        "categories",
+        "top_extensions",
+        "age",
+        "created_by_year",
+        "last_activity",
+        "last_activity_sources",
+        "largest_files",
+        "duplicate_rate",
+        "hash_coverage",
+        "columns",
+        "mean_fill_rate",
+        "fill_rate_method",
+        "fill_rate_sample",
+        "content_types",
+        "default_content_types_only",
+        "folder_patterns",
+        "exposure"
+      ],
+      "title": "Library",
+      "type": "object"
+    },
+    "LibraryExposure": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "ok",
+            "partial_caller_scoped",
+            "unknown",
+            "forbidden",
+            "not_run",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "checked": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Checked"
+        },
+        "items_with_anyone_link": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With Anyone Link"
+        },
+        "items_with_org_link": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With Org Link"
+        },
+        "items_with_people_link": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With People Link"
+        },
+        "items_with_direct_grants": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With Direct Grants"
+        },
+        "items_with_guest_or_external": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With Guest Or External"
+        },
+        "items_with_eeeu": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items With Eeeu"
+        },
+        "items_differing_from_root": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items Differing From Root"
+        },
+        "unique_permissions_method": {
+          "anyOf": [
+            {
+              "const": "compare_to_root",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unique Permissions Method"
+        }
+      },
+      "required": [
+        "status",
+        "checked",
+        "items_with_anyone_link",
+        "items_with_org_link",
+        "items_with_people_link",
+        "items_with_direct_grants",
+        "items_with_guest_or_external",
+        "items_with_eeeu",
+        "items_differing_from_root",
+        "unique_permissions_method"
+      ],
+      "title": "LibraryExposure",
+      "type": "object"
+    },
+    "ListInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "kind": {
+          "const": "list",
+          "title": "Kind",
+          "type": "string"
+        },
+        "items": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Items"
+        },
+        "truncated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Truncated"
+        },
+        "columns": {
+          "items": {
+            "$ref": "#/$defs/Column"
+          },
+          "title": "Columns",
+          "type": "array"
+        },
+        "mean_fill_rate": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mean Fill Rate"
+        },
+        "fill_rate_method": {
+          "anyOf": [
+            {
+              "const": "first_n",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fill Rate Method"
+        },
+        "fill_rate_sample": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fill Rate Sample"
+        },
+        "last_activity": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Last Activity"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "items",
+        "truncated",
+        "columns",
+        "mean_fill_rate",
+        "fill_rate_method",
+        "fill_rate_sample",
+        "last_activity"
+      ],
+      "title": "ListInfo",
+      "type": "object"
+    },
+    "Owner": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "display_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Display Name"
+        },
+        "mail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mail"
+        }
+      },
+      "required": [
+        "id",
+        "display_name",
+        "mail"
+      ],
+      "title": "Owner",
+      "type": "object"
+    },
+    "Ownership": {
+      "additionalProperties": false,
+      "properties": {
+        "owners": {
+          "items": {
+            "$ref": "#/$defs/Owner"
+          },
+          "title": "Owners",
+          "type": "array"
+        },
+        "owners_source": {
+          "enum": [
+            "group_owners",
+            "unavailable"
+          ],
+          "title": "Owners Source",
+          "type": "string"
+        },
+        "active_contributors_90d": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Active Contributors 90D"
+        },
+        "top_contributors": {
+          "items": {
+            "$ref": "#/$defs/Contributor"
+          },
+          "title": "Top Contributors",
+          "type": "array"
+        },
+        "owner_hint_matched": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Owner Hint Matched"
+        }
+      },
+      "required": [
+        "owners",
+        "owners_source",
+        "active_contributors_90d",
+        "top_contributors",
+        "owner_hint_matched"
+      ],
+      "title": "Ownership",
+      "type": "object"
+    },
+    "Privacy": {
+      "additionalProperties": false,
+      "description": "How paths and contributor identities were recorded.",
+      "properties": {
+        "path_mode": {
+          "enum": [
+            "full",
+            "tokens",
+            "hashed"
+          ],
+          "title": "Path Mode",
+          "type": "string"
+        },
+        "contributors": {
+          "enum": [
+            "email",
+            "hashed"
+          ],
+          "title": "Contributors",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path_mode",
+        "contributors"
+      ],
+      "title": "Privacy",
+      "type": "object"
+    },
+    "SampleCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "drive_id": {
+          "title": "Drive Id",
+          "type": "string"
+        },
+        "item_id": {
+          "title": "Item Id",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "ext": {
+          "title": "Ext",
+          "type": "string"
+        },
+        "bytes": {
+          "minimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "modified": {
+          "format": "date",
+          "title": "Modified",
+          "type": "string"
+        }
+      },
+      "required": [
+        "drive_id",
+        "item_id",
+        "path",
+        "ext",
+        "bytes",
+        "modified"
+      ],
+      "title": "SampleCandidate",
+      "type": "object"
+    },
+    "SectionState": {
+      "additionalProperties": false,
+      "description": "Status of one collection section and, when it is not ``ok``, the reason code.",
+      "properties": {
+        "status": {
+          "enum": [
+            "ok",
+            "partial",
+            "truncated",
+            "not_run",
+            "unavailable",
+            "forbidden",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "pattern": "\\A(?:ambiguous|has_subsites|name_requires_delegated|no_access|not_found|not_granted|owners_unavailable|sam_no_match|throttled_out|timeout|truncated|graph_error_[1-5][0-9]{2})\\Z",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "status",
+        "reason"
+      ],
+      "title": "SectionState",
+      "type": "object"
+    },
+    "Sections": {
+      "additionalProperties": false,
+      "description": "Per-section collection status; the source of truth for \"measured\" versus \"unknown\".",
+      "properties": {
+        "site": {
+          "$ref": "#/$defs/SectionState"
+        },
+        "libraries": {
+          "$ref": "#/$defs/SectionState"
+        },
+        "lists": {
+          "$ref": "#/$defs/SectionState"
+        },
+        "exposure": {
+          "$ref": "#/$defs/SectionState"
+        },
+        "ownership": {
+          "$ref": "#/$defs/SectionState"
+        },
+        "sample_candidates": {
+          "$ref": "#/$defs/SectionState"
+        },
+        "sam": {
+          "$ref": "#/$defs/SectionState"
+        }
+      },
+      "required": [
+        "site",
+        "libraries",
+        "lists",
+        "exposure",
+        "ownership",
+        "sample_candidates",
+        "sam"
+      ],
+      "title": "Sections",
+      "type": "object"
+    },
+    "SiteInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Title"
+        },
+        "created": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Created"
+        },
+        "last_modified": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Last Modified"
+        },
+        "kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "group",
+                "communication",
+                "other"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Kind"
+        },
+        "subsites": {
+          "items": {
+            "$ref": "#/$defs/Subsite"
+          },
+          "title": "Subsites",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "url",
+        "title",
+        "created",
+        "last_modified",
+        "kind",
+        "subsites"
+      ],
+      "title": "SiteInfo",
+      "type": "object"
+    },
+    "Subsite": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Title"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "url"
+      ],
+      "title": "Subsite",
+      "type": "object"
+    },
+    "WarningEntry": {
+      "additionalProperties": false,
+      "description": "One non-fatal condition. Named to avoid shadowing the builtin ``Warning``.",
+      "properties": {
+        "code": {
+          "pattern": "\\A(?:ambiguous|has_subsites|name_requires_delegated|no_access|not_found|not_granted|owners_unavailable|sam_no_match|throttled_out|timeout|truncated|graph_error_[1-5][0-9]{2})\\Z",
+          "title": "Code",
+          "type": "string"
+        },
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Detail"
+        }
+      },
+      "required": [
+        "code",
+        "detail"
+      ],
+      "title": "WarningEntry",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The fact sheet for one site: the contract every later stage reads.\n\nProvisional until the Phase 6 freeze (D-06). Unknown is never zero: when a section's\nstatus is in ``UNKNOWN_STATUSES`` (not_run, unavailable, forbidden, failed, unknown) the\ndata it governs is null or an empty list. A measured zero is only ever recorded under a\nstatus that says the section was measured.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "tool_version": {
+      "title": "Tool Version",
+      "type": "string"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "collected_at": {
+      "format": "date-time",
+      "title": "Collected At",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "partial",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "privacy": {
+      "$ref": "#/$defs/Privacy"
+    },
+    "collect_limits": {
+      "$ref": "#/$defs/CollectLimits"
+    },
+    "sections": {
+      "$ref": "#/$defs/Sections"
+    },
+    "input": {
+      "$ref": "#/$defs/InputRecord"
+    },
+    "site": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SiteInfo"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "libraries": {
+      "items": {
+        "$ref": "#/$defs/Library"
+      },
+      "title": "Libraries",
+      "type": "array"
+    },
+    "lists": {
+      "items": {
+        "$ref": "#/$defs/ListInfo"
+      },
+      "title": "Lists",
+      "type": "array"
+    },
+    "exposure_total": {
+      "$ref": "#/$defs/ExposureTotal"
+    },
+    "ownership": {
+      "$ref": "#/$defs/Ownership"
+    },
+    "sample_candidates": {
+      "items": {
+        "$ref": "#/$defs/SampleCandidate"
+      },
+      "title": "Sample Candidates",
+      "type": "array"
+    },
+    "sam": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Sam"
+    },
+    "graph_stats": {
+      "$ref": "#/$defs/GraphStats"
+    },
+    "warnings": {
+      "items": {
+        "$ref": "#/$defs/WarningEntry"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "tool_version",
+    "run_id",
+    "collected_at",
+    "status",
+    "privacy",
+    "collect_limits",
+    "sections",
+    "input",
+    "site",
+    "libraries",
+    "lists",
+    "exposure_total",
+    "ownership",
+    "sample_candidates",
+    "sam",
+    "graph_stats",
+    "warnings"
+  ],
+  "title": "FactSheet",
+  "type": "object"
+}

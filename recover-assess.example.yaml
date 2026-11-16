@@ -1,0 +1,43 @@
+# Example configuration for recover-assess. Neutral values only.
+#
+# Copy this file OUTSIDE the repository as recover-assess.yaml (that name is git-ignored),
+# or point --config / RECOVER_ASSESS_CONFIG at your copy. Client-specific values (tenant
+# ids, host names, client ids, certificate paths) never belong in the repository (D-12).
+#
+# Precedence, each layer overriding the last: built-in defaults, this file, environment
+# variables (RECOVER_ASSESS__COLLECT__SAMPLE_SIZE=20), then CLI flags. Unknown keys are an
+# error, so a typo is caught rather than ignored. Client secrets are not supported: use
+# auth.mode app_certificate or managed_identity.
+tenant:
+  id: "00000000-0000-0000-0000-000000000000"
+  default_hostname: "contoso.sharepoint.com"
+auth:
+  mode: delegated                    # delegated | app_certificate | managed_identity
+  client_id: "11111111-1111-1111-1111-111111111111"
+  certificate_path: null             # app_certificate: PEM or PFX path
+  certificate_thumbprint: null
+  certificate_password_env: null     # NAME of the variable holding the password, never the value
+  managed_identity_client_id: null   # user-assigned identity only
+collect:
+  max_rows: 500
+  max_items_per_library: 50000
+  fill_rate_sample: 500
+  permission_checks_per_library: 200
+  sample_size: 15
+  max_file_mb: 10
+  owners_via_groups: false
+  skip_lists: ["Site Assets", "Style Library", "Form Templates", "Preservation Hold Library"]
+  sam_url_column: "Site URL"
+  sam_keep_columns: []
+http:
+  max_in_flight_per_site: 4
+  max_concurrent_sites: 2
+  connect_timeout_s: 30
+  read_timeout_s: 120
+  max_retries: 6
+  site_wall_clock_minutes: 30
+  user_agent_company: null           # decorates the User-Agent for tenant-admin attribution
+output:
+  dir: ./out
+  path_mode: full                    # full | tokens | hashed
+  contributors: email                # email | hashed

@@ -1,0 +1,259 @@
+{
+  "schema_version": "1.0",
+  "tool_version": "0.1.0",
+  "run_id": "run-demo",
+  "collected_at": "2026-01-02T03:04:05Z",
+  "status": "complete",
+  "privacy": {
+    "path_mode": "full",
+    "contributors": "email"
+  },
+  "collect_limits": {
+    "max_items_per_library": 50000,
+    "fill_rate_sample": 500,
+    "permission_checks_per_library": 200,
+    "max_file_mb": 10,
+    "sample_size": 15
+  },
+  "sections": {
+    "site": {
+      "status": "ok",
+      "reason": null
+    },
+    "libraries": {
+      "status": "ok",
+      "reason": null
+    },
+    "lists": {
+      "status": "ok",
+      "reason": null
+    },
+    "exposure": {
+      "status": "ok",
+      "reason": null
+    },
+    "ownership": {
+      "status": "ok",
+      "reason": null
+    },
+    "sample_candidates": {
+      "status": "ok",
+      "reason": null
+    },
+    "sam": {
+      "status": "ok",
+      "reason": null
+    }
+  },
+  "input": {
+    "raw": "https://contoso.sharepoint.com/sites/example",
+    "normalized": "https://contoso.sharepoint.com/sites/example",
+    "label": "Contoso Team Site",
+    "business_unit": "Operations",
+    "owner_hint": null,
+    "priority": null,
+    "extra": {}
+  },
+  "site": {
+    "id": "11111111-1111-1111-1111-111111111111",
+    "url": "https://contoso.sharepoint.com/sites/example",
+    "title": "Contoso Team Site",
+    "created": "2024-03-04T05:06:07Z",
+    "last_modified": "2026-01-01T00:00:00Z",
+    "kind": "group",
+    "subsites": []
+  },
+  "libraries": [
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "drive_id": "33333333-3333-3333-3333-333333333333",
+      "name": "Shared Documents",
+      "kind": "library",
+      "files": 120,
+      "folders": 14,
+      "bytes": 52428800,
+      "truncated": false,
+      "truncated_reason": null,
+      "coverage": {
+        "counted_items": 134,
+        "counted_bytes": 52428800,
+        "root_bytes": 52428800,
+        "ratio": 1.0
+      },
+      "path_unresolved": 0,
+      "depth": {
+        "max": 4,
+        "p50": 2,
+        "p90": 3
+      },
+      "categories": {
+        "word": 0.4,
+        "pdf": 0.2,
+        "excel": 0.15,
+        "powerpoint": 0.1,
+        "email": 0.05,
+        "image": 0.04,
+        "text": 0.03,
+        "archive": 0.01,
+        "other": 0.02
+      },
+      "top_extensions": [
+        {
+          "ext": "docx",
+          "share": 0.4
+        }
+      ],
+      "age": {
+        "lt_1y": 0.5,
+        "y1_3": 0.3,
+        "gt_3y": 0.2
+      },
+      "created_by_year": {
+        "2023": 40,
+        "2024": 80
+      },
+      "last_activity": "2026-01-02T03:04:05Z",
+      "last_activity_sources": [
+        "file"
+      ],
+      "largest_files": [
+        {
+          "path": "Reports/Summary.docx",
+          "bytes": 2097152
+        }
+      ],
+      "duplicate_rate": 0.0125,
+      "hash_coverage": 0.9,
+      "columns": [
+        {
+          "name": "Region",
+          "display_name": "Region",
+          "type": "choice",
+          "required": false,
+          "custom": true,
+          "choices": [],
+          "term_set_id": null,
+          "fill_rate": 0.75
+        },
+        {
+          "name": "Reviewer",
+          "display_name": "Reviewer",
+          "type": "personOrGroup",
+          "required": false,
+          "custom": true,
+          "choices": [],
+          "term_set_id": null,
+          "fill_rate": 0.75
+        }
+      ],
+      "mean_fill_rate": 0.75,
+      "fill_rate_method": "first_n",
+      "fill_rate_sample": 100,
+      "content_types": [
+        "Document"
+      ],
+      "default_content_types_only": true,
+      "folder_patterns": [
+        {
+          "depth": 1,
+          "kind": "year",
+          "share": 0.5,
+          "distinct": 3,
+          "examples": [
+            "2023",
+            "2024"
+          ]
+        }
+      ],
+      "exposure": {
+        "status": "ok",
+        "checked": 25,
+        "items_with_anyone_link": 0,
+        "items_with_org_link": 2,
+        "items_with_people_link": 3,
+        "items_with_direct_grants": 1,
+        "items_with_guest_or_external": 0,
+        "items_with_eeeu": 0,
+        "items_differing_from_root": 4,
+        "unique_permissions_method": "compare_to_root"
+      }
+    }
+  ],
+  "lists": [
+    {
+      "id": "44444444-4444-4444-4444-444444444444",
+      "name": "Change Log",
+      "kind": "list",
+      "items": 42,
+      "truncated": false,
+      "columns": [
+        {
+          "name": "Owner",
+          "display_name": "Owner",
+          "type": "personOrGroup",
+          "required": false,
+          "custom": true,
+          "choices": [],
+          "term_set_id": null,
+          "fill_rate": 0.75
+        }
+      ],
+      "mean_fill_rate": 0.8,
+      "fill_rate_method": "first_n",
+      "fill_rate_sample": 42,
+      "last_activity": "2025-12-31T00:00:00Z"
+    }
+  ],
+  "exposure_total": {
+    "status": "ok",
+    "checked": 25,
+    "items_with_anyone_link": 0,
+    "items_with_org_link": 2,
+    "items_with_people_link": 3,
+    "items_with_direct_grants": 1,
+    "items_with_guest_or_external": 0,
+    "items_with_eeeu": 0,
+    "items_differing_from_root": 4,
+    "caller_is_owner": false
+  },
+  "ownership": {
+    "owners": [
+      {
+        "id": "55555555-5555-5555-5555-555555555555",
+        "display_name": null,
+        "mail": "owner@example.com"
+      }
+    ],
+    "owners_source": "group_owners",
+    "active_contributors_90d": 3,
+    "top_contributors": [
+      {
+        "id": "contributor@example.com",
+        "files_modified_365d": 12,
+        "last": "2025-12-30"
+      }
+    ],
+    "owner_hint_matched": null
+  },
+  "sample_candidates": [
+    {
+      "drive_id": "33333333-3333-3333-3333-333333333333",
+      "item_id": "66666666-6666-6666-6666-666666666666",
+      "path": "Reports/Summary.docx",
+      "ext": "docx",
+      "bytes": 2097152,
+      "modified": "2025-12-30"
+    }
+  ],
+  "sam": {
+    "slug": "example"
+  },
+  "graph_stats": {
+    "requests": 40,
+    "batches": 2,
+    "throttled": 0,
+    "retries": 0,
+    "seconds": 3.5
+  },
+  "warnings": []
+}
