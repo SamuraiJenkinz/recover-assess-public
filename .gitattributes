@@ -5,3 +5,4 @@
 *.yml text eol=lf
 uv.lock text eol=lf
 .python-version text eol=lf
+requirements/*.txt text eol=lf

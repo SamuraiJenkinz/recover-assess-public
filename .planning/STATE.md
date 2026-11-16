@@ -5,10 +5,10 @@ current_phase: 01
 current_phase_name: Foundation, Contract & Read-Only Graph Client
 status: verifying
 stopped_at: Completed 01-10-PLAN.md
-last_updated: "2026-11-16T18:16:17.717Z"
+last_updated: "2026-11-16T20:21:12.066Z"
 last_activity: 2026-11-16
 last_activity_desc: Phase 01 execution started
-state_head: af6f00999123bda2d97b15d79e47d4feaf35284a
+state_head: f241972cc9cc415c355bf972e47c94798a1b950e
 progress:
   total_phases: 12
   completed_phases: 0
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-11-15)
 Phase: 01 (Foundation, Contract & Read-Only Graph Client) — EXECUTING
 Plan: 12 of 12
 Status: Phase complete — ready for verification
-Last activity: 2026-11-16 - Completed quick task 261116-915: Scrub client-specific nomenclature from tracked files and add a blocked-term CI check
+Last activity: 2026-11-16 - Completed quick task 261116-kqf: Corporate-network install guide with a hash-locked pip fallback
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -128,6 +128,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 261116-915 | Scrub client-specific nomenclature from tracked files and add a blocked-term CI check | 2026-11-16 | af6f009 | [261116-915-scrub-client-specific-nomenclature-from-](./quick/261116-915-scrub-client-specific-nomenclature-from-/) |
+| 261116-kqf | Corporate-network install guide with a hash-locked pip fallback | 2026-11-16 | f241972 | [261116-kqf-corporate-network-install-guide-with-has](./quick/261116-kqf-corporate-network-install-guide-with-has/) |
 
 ## Deferred Items
 

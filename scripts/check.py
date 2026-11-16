@@ -1,8 +1,8 @@
 """Single local and CI quality gate for recover-assess (D-03).
 
-Runs, in order: uv lock --check, ruff check, ruff format --check, mypy, lint-imports,
-the blocked-term scan of every tracked file, pytest. Every step runs even after an earlier
-failure, so one run reports everything.
+Runs, in order: uv lock --check, the requirements export drift check, ruff check,
+ruff format --check, mypy, lint-imports, the blocked-term scan of every tracked file, pytest.
+Every step runs even after an earlier failure, so one run reports everything.
 The exit code is 0 only when no step failed.
 
 Usage: uv run python scripts/check.py [--fix] [--fast]
@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 STEP_NAMES: tuple[str, ...] = (
     "uv-lock-check",
+    "requirements-export",
     "ruff-check",
     "ruff-format",
     "mypy",
@@ -34,6 +35,9 @@ STEP_NAMES: tuple[str, ...] = (
     "blocked-terms",
     "pytest",
 )
+
+# Steps that shell out to uv: skipped locally, failed in CI, when uv is not on PATH.
+NEEDS_UV: frozenset[str] = frozenset({"uv-lock-check", "requirements-export"})
 
 Status = Literal["PASS", "FAIL", "SKIP"]
 Runner = Callable[[Sequence[str]], int]
@@ -72,6 +76,10 @@ def build_steps(*, fix: bool, fast: bool, environ: Mapping[str, str]) -> list[St
     steps.extend(
         [
             Step("uv-lock-check", ("uv", "lock", "--check")),
+            Step(
+                "requirements-export",
+                (py, str(ROOT / "scripts" / "export_requirements.py"), "--check"),
+            ),
             Step("ruff-check", (py, "-m", "ruff", "check", ".")),
             Step("ruff-format", (py, "-m", "ruff", "format", "--check", ".")),
             Step("mypy", (py, "-m", "mypy")),
@@ -101,7 +109,7 @@ def run_steps(
     results: list[StepResult] = []
     for step in steps:
         started = time.perf_counter()
-        if step.name == "uv-lock-check" and not uv_available:
+        if step.name in NEEDS_UV and not uv_available:
             status: Status = "FAIL" if in_ci else "SKIP"
             results.append(StepResult(step.name, status, 0.0, "uv not on PATH"))
             continue
@@ -134,7 +142,8 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="check.py",
         description=(
-            "Run the full quality gate: lock, lint, format, types, contracts, blocked terms, tests."
+            "Run the full quality gate: lock, requirements export, lint, format, types, "
+            "contracts, blocked terms, tests."
         ),
     )
     parser.add_argument(

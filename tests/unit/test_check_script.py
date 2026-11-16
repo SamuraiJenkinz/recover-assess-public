@@ -20,6 +20,7 @@ WORKFLOW_PATH = ROOT / ".github" / "workflows" / "ci.yml"
 
 GATE_STEPS = [
     "uv-lock-check",
+    "requirements-export",
     "ruff-check",
     "ruff-format",
     "mypy",
@@ -65,7 +66,7 @@ def _fake_runner(
     return runner, calls
 
 
-def test_step_names_are_the_seven_gate_steps(check: ModuleType) -> None:
+def test_step_names_are_the_eight_gate_steps(check: ModuleType) -> None:
     assert list(check.STEP_NAMES) == GATE_STEPS
 
 
@@ -78,6 +79,11 @@ def test_build_steps_argv_shapes(check: ModuleType) -> None:
     steps = {s.name: list(s.argv) for s in check.build_steps(fix=False, fast=False, environ={})}
     py = sys.executable
     assert steps["uv-lock-check"] == ["uv", "lock", "--check"]
+    assert steps["requirements-export"] == [
+        py,
+        str(CHECK_PATH.parent / "export_requirements.py"),
+        "--check",
+    ]
     assert steps["ruff-check"] == [py, "-m", "ruff", "check", "."]
     assert steps["ruff-format"] == [py, "-m", "ruff", "format", "--check", "."]
     assert steps["mypy"] == [py, "-m", "mypy"]
@@ -109,6 +115,7 @@ def test_one_failure_fails_overall_and_nothing_is_skipped(check: ModuleType) -> 
     results = check.run_steps(steps, runner=runner, uv_available=True, in_ci=False)
     assert {r.name: r.status for r in results} == {
         "uv-lock-check": "PASS",
+        "requirements-export": "PASS",
         "ruff-check": "PASS",
         "ruff-format": "FAIL",
         "mypy": "PASS",
@@ -125,7 +132,7 @@ def test_main_exit_code_one_when_a_step_fails(
     runner, calls = _fake_runner(check, {"ruff-format"})
     code = check.main([], runner=runner, environ={}, uv_available=True)
     assert code == 1
-    assert len(calls) == 7
+    assert len(calls) == 8
     out = capsys.readouterr().out
     for name in GATE_STEPS:
         assert name in out
@@ -140,21 +147,21 @@ def test_main_exit_code_zero_when_all_pass(
     assert code == 0
     out = capsys.readouterr().out
     assert "FAIL" not in out
-    assert out.count("PASS") >= 7
+    assert out.count("PASS") >= 8
 
 
 def test_every_single_failure_position_gives_exit_one(check: ModuleType) -> None:
     for name in GATE_STEPS:
         runner, calls = _fake_runner(check, {name})
         assert check.main([], runner=runner, environ={}, uv_available=True) == 1
-        assert len(calls) == 7
+        assert len(calls) == 8
 
 
 def test_all_pass_results(check: ModuleType) -> None:
     runner, _ = _fake_runner(check, set())
     steps = check.build_steps(fix=False, fast=False, environ={})
     results = check.run_steps(steps, runner=runner, uv_available=True, in_ci=False)
-    assert [r.status for r in results] == ["PASS"] * 7
+    assert [r.status for r in results] == ["PASS"] * 8
     assert all(r.seconds >= 0 for r in results)
 
 
@@ -162,8 +169,8 @@ def test_uv_missing_outside_ci_is_skip(check: ModuleType) -> None:
     runner, calls = _fake_runner(check, set())
     steps = check.build_steps(fix=False, fast=False, environ={})
     results = check.run_steps(steps, runner=runner, uv_available=False, in_ci=False)
-    first = results[0]
-    assert (first.name, first.status, first.detail) == ("uv-lock-check", "SKIP", "uv not on PATH")
+    for result, name in zip(results[:2], ("uv-lock-check", "requirements-export"), strict=True):
+        assert (result.name, result.status, result.detail) == (name, "SKIP", "uv not on PATH")
     assert len(calls) == 6
     assert check.main([], runner=runner, environ={}, uv_available=False) == 0
 
@@ -172,7 +179,7 @@ def test_uv_missing_in_ci_is_fail(check: ModuleType) -> None:
     runner, _ = _fake_runner(check, set())
     steps = check.build_steps(fix=False, fast=False, environ={"CI": "true"})
     results = check.run_steps(steps, runner=runner, uv_available=False, in_ci=True)
-    assert results[0].status == "FAIL"
+    assert [r.status for r in results[:2]] == ["FAIL", "FAIL"]
     assert check.main([], runner=runner, environ={"CI": "true"}, uv_available=False) == 1
 
 
