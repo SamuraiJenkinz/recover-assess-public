@@ -30,10 +30,22 @@ The last command prints `0.1.0`.
 
 ## Behind a TLS-inspecting proxy
 
-uv ships its own set of root certificates, so a corporate proxy that
-re-signs HTTPS traffic can make `uv python install` and `uv sync` fail with a
-certificate error. Set `UV_SYSTEM_CERTS=true` so uv uses the operating system
-trust store instead.
+uv can load the operating system's certificate store with `--system-certs` or
+`UV_SYSTEM_CERTS=true`. This exists in uv 0.11 and later as well as the pinned
+0.13.8. Behind a TLS-inspecting proxy, `uv python install` and `uv sync` still
+need two things:
+
+1. The proxy's inspection root CA must be in the store uv actually reads. That
+   is the operating system store when `UV_SYSTEM_CERTS` is set, or the PEM
+   bundle named by `SSL_CERT_FILE`, which replaces every other source (see
+   [If uv still reports certificate errors](#if-uv-still-reports-certificate-errors)).
+2. uv must be pointed at the private package mirror with `UV_DEFAULT_INDEX` plus
+   `UV_INDEX_<NAME>_USERNAME` and `UV_INDEX_<NAME>_PASSWORD` (see
+   [Using a private package mirror](#using-a-private-package-mirror)).
+   Otherwise uv asks the public index, and the proxy answers with its block page
+   instead of package data.
+
+To use the operating system store:
 
 PowerShell:
 
@@ -175,16 +187,10 @@ If only the mirror is reachable, run `uv sync` (without `--locked`), then
 `git diff uv.lock`. Only URLs may change. If any version or hash changed, stop
 and use the pip fallback below. Never commit that local `uv.lock` change.
 
-For pip, set the index for the session only. pip asks for the user name and
-token when the mirror answers 401; do not store them in `pip.ini`:
-
-```powershell
-$env:PIP_INDEX_URL = "https://<mirror-host>/<path-to-pypi-remote>/simple"
-```
-
-```bash
-export PIP_INDEX_URL="https://<mirror-host>/<path-to-pypi-remote>/simple"
-```
+For pip, set `PIP_INDEX_URL` for the session only, with the credentials
+URL-escaped into it, as the
+[pip fallback](#fallback-install-with-pip-when-uv-cannot-reach-the-network)
+shows. Never store it in `pip.ini`.
 
 ### Diagnosis note for whoever runs the mirror
 
@@ -209,14 +215,113 @@ locked versions from any index (public, or the mirror through `PIP_INDEX_URL`)
 and refuses any file whose hash differs. This route is for running the tool;
 development still needs uv.
 
-Prerequisite: Python 3.12 installed for the current user (the python.org
-installer's per-user option needs no admin rights). If a half-made `.venv` is
-left over from a failed `uv sync`, delete it first.
+There are two routes:
 
-PowerShell, from the repository checkout:
+- Primary: you have uv 0.11 or later (`uv --version`). pip installs the locked
+  runtime set through the mirror, and uv builds the project wheel offline with
+  its built-in backend, so nothing is downloaded for the build.
+- Secondary: you have Python 3.12 but no uv. See
+  [Python 3.12 without uv](#python-312-without-uv).
+
+Prerequisite: if a half-made `.venv` is left over from a failed `uv sync`,
+delete it first. Inside a folder that already has a `.venv`, `uv python find`
+reports that venv's interpreter, not the one you want.
+
+PowerShell, from the repository checkout. Install Python 3.12 only if you have
+none (this downloads an interpreter; see `UV_PYTHON_DOWNLOADS` in the
+[TLS section](#behind-a-tls-inspecting-proxy)), then create the venv:
 
 ```powershell
-py -3.12 -m venv .venv
+uv python install 3.12
+$py = uv python find 3.12
+& $py -m venv .venv
+$env:PATH = "$PWD\.venv\Scripts;$env:PATH"
+```
+
+Point pip at the mirror for this session only. Set the two mirror variables as
+shown in [Using a private package mirror](#using-a-private-package-mirror)
+(the token is typed without echo), so uv and pip share one set of session
+credentials. Then build the index URL from them:
+
+```powershell
+$user = [uri]::EscapeDataString($env:UV_INDEX_MIRROR_USERNAME)
+$token = [uri]::EscapeDataString($env:UV_INDEX_MIRROR_PASSWORD)
+$mirror = "<mirror-host>/<path-to-pypi-remote>/simple"
+$env:PIP_INDEX_URL = "https://${user}:${token}@$mirror"
+```
+
+The user name is usually an e-mail address, and an `@`, `:` or `/` in it or in
+the token breaks the URL unless it is escaped.
+
+Install the locked runtime set, build the project wheel offline, install it:
+
+```powershell
+python -m pip install --require-hashes --no-deps --only-binary=:all: -r requirements\locked.txt
+Remove-Item dist -Recurse -ErrorAction SilentlyContinue
+uv build --wheel --offline --out-dir dist
+$wheel = (Get-ChildItem dist\*.whl).FullName
+python -m pip install --no-index --no-deps --force-reinstall $wheel
+recover-assess --version
+Remove-Item Env:PIP_INDEX_URL
+```
+
+`recover-assess --version` prints `0.1.0`. The last line removes
+`PIP_INDEX_URL` because it holds the token. What the flags do:
+
+- `--require-hashes` checks every downloaded file against the hash from `uv.lock`.
+- `--no-deps` is safe because the file already lists the full locked set.
+- `--only-binary=:all:` never builds a source archive, so no downloaded build
+  code runs.
+- `uv build --wheel --offline` uses uv's built-in backend. It downloads
+  nothing, so no downloaded build code runs.
+- `--no-index --no-deps --force-reinstall` on the wheel installs only the
+  project, from the local file, and replaces an earlier install of the same
+  version.
+
+The `PATH` line replaces `Activate.ps1`, which script execution policy often
+blocks.
+
+bash (on Git Bash for Windows use `.venv/Scripts` instead of `.venv/bin`):
+
+```bash
+py=$(uv python find 3.12)
+"$py" -m venv .venv
+export PATH="$PWD/.venv/bin:$PATH"
+quote='import os, sys, urllib.parse; print(urllib.parse.quote(os.environ[sys.argv[1]], safe=""))'
+user=$(python -c "$quote" UV_INDEX_MIRROR_USERNAME)
+token=$(python -c "$quote" UV_INDEX_MIRROR_PASSWORD)
+export PIP_INDEX_URL="https://${user}:${token}@<mirror-host>/<path-to-pypi-remote>/simple"
+python -m pip install --require-hashes --no-deps --only-binary=:all: -r requirements/locked.txt
+rm -rf dist
+uv build --wheel --offline --out-dir dist
+python -m pip install --no-index --no-deps --force-reinstall dist/*.whl
+recover-assess --version
+unset PIP_INDEX_URL
+```
+
+### If every package fails the hash check
+
+If every package fails the hash check, all showing the same "Got" hash, and
+each download is only about 1.5 kB, pip is not using the mirror. It is going to
+the public index, and the corporate proxy is returning its block page instead
+of the files. Set `PIP_INDEX_URL` in this session as above. pip's
+`Looking in indexes:` line shows which index it is using, with the token
+masked as `****`.
+
+With uv older than 0.11, the offline build fails because uv tries to download
+the build backend. Use the route without uv.
+
+### Python 3.12 without uv
+
+With Python 3.12 and no uv, pip installs the hash-locked build backend itself
+and builds the project in place. Set `PIP_INDEX_URL` as in the primary route.
+Find a 3.12 interpreter (the Windows Python launcher can list installed ones)
+and create the venv from it.
+
+PowerShell:
+
+```powershell
+& "<path-to-python-3.12>\python.exe" -m venv .venv
 $env:PATH = "$PWD\.venv\Scripts;$env:PATH"
 python -m pip install --require-hashes --no-deps --only-binary=:all: -r requirements\locked.txt
 python -m pip install --require-hashes --no-deps --only-binary=:all: -r requirements\build.txt
@@ -224,23 +329,14 @@ python -m pip install --no-index --no-deps --no-build-isolation .
 recover-assess --version
 ```
 
-The last command prints `0.1.0`. What the flags do:
+`--no-build-isolation` with `build.txt`: pip would otherwise download the build
+backend itself, through the same mirror, outside the locked set. `--no-index` on
+the last step means installing the project never touches the network.
 
-- `--require-hashes` checks every downloaded file against the hash from `uv.lock`.
-- `--no-deps` is safe because the file already lists the full locked set.
-- `--only-binary=:all:` never builds a source archive, so no downloaded build
-  code runs.
-- `--no-build-isolation` with `build.txt`: pip would otherwise download the build
-  backend itself, through the same mirror, outside the locked set.
-- `--no-index` on the last step: installing the project never touches the network.
-
-The `PATH` line replaces `Activate.ps1`, which script execution policy often
-blocks, and the build backend looks for its helper program on `PATH`.
-
-bash (on Git Bash for Windows use `.venv/Scripts` instead of `.venv/bin`):
+bash:
 
 ```bash
-python3.12 -m venv .venv
+"<path-to-python-3.12>" -m venv .venv
 export PATH="$PWD/.venv/bin:$PATH"
 python -m pip install --require-hashes --no-deps --only-binary=:all: -r requirements/locked.txt
 python -m pip install --require-hashes --no-deps --only-binary=:all: -r requirements/build.txt
@@ -248,10 +344,12 @@ python -m pip install --no-index --no-deps --no-build-isolation .
 recover-assess --version
 ```
 
-This gives the real `recover-assess` console script, so no environment-variable
-tricks or wrapper scripts are needed. In a later session, prepend the `PATH`
-again or run `.venv\Scripts\recover-assess.exe` directly. After `git pull`,
-rerun the two locked installs and the last step.
+Both routes give the real `recover-assess` console script, so no
+environment-variable tricks or wrapper scripts are needed. In a later session,
+prepend the `PATH` again or run `.venv\Scripts\recover-assess.exe` directly.
+After `git pull`, rerun the locked install, then the build and wheel install
+(primary route) or the `build.txt` install and the project install (secondary
+route).
 
 ### If one package still will not download
 

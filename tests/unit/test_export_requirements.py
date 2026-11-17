@@ -240,10 +240,49 @@ def test_committed_build_txt_is_only_the_build_backend() -> None:
     assert hashes >= 1
 
 
-def test_build_group_equals_build_system_requires() -> None:
+REQUIRES_PATTERN = re.compile(r"uv_build>=(?P<low>\d+(?:\.\d+){0,2}),<(?P<high>\d+(?:\.\d+){0,2})")
+
+
+def _version_tuple(text: str) -> tuple[int, int, int]:
+    parts = [int(part) for part in text.split(".")]
+    padded = [*parts, 0, 0, 0][:3]
+    return (padded[0], padded[1], padded[2])
+
+
+def _requires_range(requires: object) -> tuple[tuple[int, int, int], tuple[int, int, int]]:
+    """Return (low, high) of the single ``uv_build>=LOW,<HIGH`` entry, padded to three integers."""
+    assert isinstance(requires, list)
+    assert len(requires) == 1
+    match = REQUIRES_PATTERN.fullmatch(str(requires[0]))
+    assert match is not None, f"unexpected build requirement {requires[0]!r}"
+    return _version_tuple(match.group("low")), _version_tuple(match.group("high"))
+
+
+def _build_ranges() -> tuple[
+    tuple[tuple[int, int, int], tuple[int, int, int]],
+    tuple[tuple[int, int, int], tuple[int, int, int]],
+]:
     data = _pyproject()
-    groups = data["dependency-groups"]
     build_system = data["build-system"]
-    assert isinstance(groups, dict)
+    groups = data["dependency-groups"]
     assert isinstance(build_system, dict)
-    assert groups["build"] == build_system["requires"]
+    assert isinstance(groups, dict)
+    assert build_system["build-backend"] == "uv_build"
+    return _requires_range(build_system["requires"]), _requires_range(groups["build"])
+
+
+def test_build_system_requires_admits_uv_0_11() -> None:
+    """uv uses its built-in backend, and so builds offline, only when its own version fits."""
+    (low, high), _group = _build_ranges()
+    assert low <= (0, 11, 0)
+    locked = _version_tuple(_lock_versions()["uv-build"])
+    assert low <= locked < high
+
+
+def test_build_group_range_sits_inside_build_system_requires() -> None:
+    """The offline wheel route supports uv 0.11+, and the build.txt backend must stay accepted."""
+    (sys_low, sys_high), (group_low, group_high) = _build_ranges()
+    assert group_low >= sys_low
+    assert group_high <= sys_high
+    locked = _version_tuple(_lock_versions()["uv-build"])
+    assert group_low <= locked < group_high
