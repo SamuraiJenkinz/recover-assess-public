@@ -130,7 +130,8 @@ class HttpSettings(_StrictModel):
     max_concurrent_sites: _Count = 2
     connect_timeout_s: Annotated[float, Field(gt=0)] = 30.0
     read_timeout_s: Annotated[float, Field(gt=0)] = 120.0
-    max_retries: Annotated[int, Field(ge=0, le=10)] = 6
+    # Capped at 6 (GRPH-05, threat T-01-24): config may lower the retry count, never raise it.
+    max_retries: Annotated[int, Field(ge=0, le=6)] = 6
     site_wall_clock_minutes: _Count = 30
     # Decorates the User-Agent so a tenant admin can attribute the traffic.
     user_agent_company: StrictStr | None = None

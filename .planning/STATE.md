@@ -1,43 +1,44 @@
 ---
 gsd_state_version: "1.0"
 milestone: v1.0
-current_phase: 01
-current_phase_name: Foundation, Contract & Read-Only Graph Client
-status: verifying
-stopped_at: Completed 01-10-PLAN.md
-last_updated: "2026-11-17T18:25:29.770Z"
-last_activity: 2026-11-16
-last_activity_desc: Phase 01 execution started
-state_head: da6c7a2d7fac1caf8a7b591c1459d8e878fa2016
+current_phase: 2
+current_phase_name: "Walking Skeleton: Sign In, Doctor, Resolve & Collect One Site"
+status: planning
+stopped_at: Phase 01 complete, ready to plan Phase 2
+last_updated: "2026-11-18T01:14:24.563Z"
+last_activity: 2026-11-17
+last_activity_desc: Phase 01 complete, transitioned to Phase 2
+state_head: a3cc5b491b59e9dd503d3bf5f54c092424f162b0
 progress:
   total_phases: 12
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 12
   completed_plans: 12
+  percent: 8
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-11-15)
+See: .planning/PROJECT.md (updated 2026-11-17)
 
 **Core value:** Every site's effort rating, action and strategy is deterministic, traceable to evidence in the fact sheet, and produced without ever writing to Microsoft 365. If the LLM layer fails, Collector + scoring must still give a credible, defensible triage.
-**Current focus:** Phase 01 — Foundation, Contract & Read-Only Graph Client
+**Current focus:** Phase 2 — Walking Skeleton: Sign In, Doctor, Resolve & Collect One Site
 
 ## Current Position
 
-Phase: 01 (Foundation, Contract & Read-Only Graph Client) — EXECUTING
-Plan: 12 of 12
-Status: Phase complete — ready for verification
-Last activity: 2026-11-17 - Completed quick task 261117-i8j: Offline wheel build for uv 0.11+ and mirror-first pip fallback guide
+Phase: 2 — Walking Skeleton: Sign In, Doctor, Resolve & Collect One Site
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-11-17 — Phase 01 complete, transitioned to Phase 2
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 8%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
+- Total plans completed: 12
 - Average duration: - min
 - Total execution time: 0.0 hours
 
@@ -45,7 +46,7 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01 | 12 | - | - |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -114,7 +115,9 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 1, resolved 2026-11-15] Sign-off 1 approved: httpx2 + built-in `MockTransport` replace httpx + respx (01-CONTEXT D-01).
+- [Phase 4] Before bulk inventory: paging has no page limit or loop detection (01-REVIEW WR-02, re-confirmed by the verifier); nextLink query keys use the narrow allow-list (WR-03); the request hook alone does not refuse a `/content` GET (the policy layer does on every public path; defence in depth only).
+- [Portability] Blocked-terms gate gaps (01-REVIEW WR-10..12): non-UTF-8/UTF-16 files skipped (fails open), unsalted single-word digests are dictionary-reversible, file paths not scanned. Fix before the repo is shared with other companies.
+- [Build] `uv_build>=0.11,<0.14` upper bound breaks the README's "uv 0.11 or later" offline build once uv 0.14 ships (01-REVIEW WR-14).
 - [Phase 8] `jinja2` is outside the approved dependency list and needs approval before Phase 8 planning. `msal[broker]` only if the Phase 2 auth spike shows Conditional Access blocks both device code and loopback browser. Sample-tier extractors and `defusedxml` are no longer needed (sample tier is v2).
 - [Phase 2] Long-lead external items, start on day one: auth matrix on the pilot workstation (Conditional Access, WAM, Sites.Selected consent), three-stack TLS/proxy check, resolve 403-vs-404 spike.
 - [Phase 9] Gateway key/deployment and gateway capability spike (strict `json_schema` pass-through, empty-200, `upstream_auth_403`, WAF limits) depend on external provisioning.
@@ -141,6 +144,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-16T01:13:27.965Z
-Stopped at: Completed 01-10-PLAN.md
+Last session: 2026-11-17
+Stopped at: Phase 01 complete, ready to plan Phase 2
 Resume file: None

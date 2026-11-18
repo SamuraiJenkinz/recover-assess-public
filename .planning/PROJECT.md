@@ -19,13 +19,14 @@ Every site's effort rating, action and strategy is **deterministic, traceable to
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Read-only Graph client: v1.0 only, GET + `$batch`-of-GETs allow-list, paging, Retry-After/backoff (≤6 retries, 300 s budget), circuit breaker, concurrency limits, truststore + proxy, structured logs with no bodies/tokens — Phase 1
+- ✓ CI-enforced scaffold (ruff, mypy strict, import-linter contracts, blocked-terms gate, one `scripts/check.py` gate locally and on windows/ubuntu runners) and the generated provisional fact-sheet v1.0 schema — Phase 1
+- ✓ Corporate-network install: `uv sync` via a package mirror with `UV_SYSTEM_CERTS`, or a hash-locked pip fallback with an offline wheel build — Phase 1 (quick tasks 261116-kqf, 261117-i8j; UAT on the pilot workstation)
 
 ### Active
 
 **Collector (Step 1 spec = source of truth; replaces parent M0/M1)**
 - [ ] Site input by URL, server-relative path, or display name (delegated only); batch by CSV (BOM, tab/comma, unknown columns passed through, dedupe by site ID, 500-row cap)
-- [ ] Read-only Graph client: v1.0 only, GET + `$batch`-of-GETs allow-list, paging, Retry-After/backoff, circuit breaker, concurrency limits, truststore + proxy, structured logs with no bodies/tokens
 - [ ] Auth via one `TokenProvider`: `delegated` (device code / browser, encrypted MSAL cache) first; `app_certificate` and `managed_identity` for server runs; client secrets rejected
 - [ ] Collectors C1–C7, sample candidates (no download), C9 SAM join → `fact_sheet.json` validated against `schemas/fact_sheet.schema.json` v1.0
 - [ ] `doctor`, `collect`, `resume`, `grants plan`, `prune`; `resolution.csv`, `collection_summary.csv`, `run.json`, `logs/run.jsonl`; path modes full/tokens/hashed; hashed contributors
@@ -94,10 +95,11 @@ Every site's effort rating, action and strategy is **deterministic, traceable to
 | Scores/actions computed in code, LLM only explains | Repeatable, traceable, defensible to Security and clients | — Pending |
 | Track 2, backfill write-back and Knowledge MCP are separate projects | Keeps this tool read-only and focused on Module 1 | — Pending |
 | Done = pilot calibration first, then portable packaging | Calibrated numbers are the playbook's credibility | — Pending |
-| httpx2 + MockTransport instead of httpx + respx | httpx frozen; openai 3.x uses httpx2; one HTTP stack | — Pending |
+| httpx2 + MockTransport instead of httpx + respx | httpx frozen; openai 3.x uses httpx2; one HTTP stack | ✓ Good — Phase 1 (948 tests on MockTransport, no respx needed) |
 | Display-name lookup out of v1 (URL/path only) | /sites?search needs Sites.Read.All, conflicts with Sites.Selected | — Pending |
 | Sample tier (C8, A1) deferred to v2 | Riskiest/costliest; no document text leaves tenant in v1; add only if calibration shows need | — Pending |
 | Vertical MVP phase structure, fine granularity (12 phases) | Walking skeleton by Phase 2; --no-llm product by Phase 8 | — Pending |
+| Accept non-TransportError exceptions escaping the HTTP layer for now (AR-01) | No URL or token in their text; fix with review items IN-03 / WR-01 | — Pending (Phase 01 SECURITY.md) |
 
 ## Evolution
 
@@ -117,4 +119,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-11-15 after initialization*
+*Last updated: 2026-11-17 after Phase 1*

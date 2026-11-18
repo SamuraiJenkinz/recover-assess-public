@@ -303,6 +303,17 @@ def test_out_of_range_values_are_rejected() -> None:
         load_settings(environ=env(HTTP__MAX_RETRIES="11"))
 
 
+@pytest.mark.parametrize("value", ["7", "10"])
+def test_max_retries_cannot_exceed_six(value: str) -> None:
+    # T-01-24 / GRPH-05: at most 6 retries, whatever the operator config says.
+    with pytest.raises(ConfigError, match=r"http\.max_retries"):
+        load_settings(environ=env(HTTP__MAX_RETRIES=value))
+
+
+def test_max_retries_accepts_six() -> None:
+    assert load_settings(environ=env(HTTP__MAX_RETRIES="6")).http.max_retries == 6
+
+
 def test_the_yaml_path_does_not_leak_between_loads(tmp_path: Path) -> None:
     path = write_yaml(tmp_path, "collect:\n  sample_size: 20\n")
 

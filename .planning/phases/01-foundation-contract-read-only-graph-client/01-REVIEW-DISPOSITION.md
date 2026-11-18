@@ -1,7 +1,7 @@
 ---
 phase: 01
 review: 01-REVIEW.md
-updated: 2026-11-16T01:20:52Z
+updated: 2026-11-17T00:00:00Z
 ---
 
 # Phase 01 code review disposition
@@ -24,3 +24,14 @@ One row per finding. `open` = not yet triaged.
 | IN-03 | info | httpx2 exceptions that are not `TransportError` escape `_hop` unwrapped | open | |
 | IN-04 | info | A session stays usable after its context exits, and `batch()` has a hard-coded item cap | open | |
 | IN-05 | info | `verify_sha256.py` fails with a traceback on bad input and rejects BSD-style sidecars | open | |
+| WR-10 | warning | The blocked-term scan silently skips any file that contains a NUL byte or is not valid UTF-8 | open | incremental review 2026-11-17 |
+| WR-11 | warning | Unsalted SHA-256 digests of single words are reversible by dictionary attack, so the committed list effectively discloses the terms | open | incremental review 2026-11-17 |
+| WR-12 | warning | File paths are never scanned, and a path hit would echo the term | open | incremental review 2026-11-17 |
+| WR-13 | warning | The sdist ships `tests/**` and `scripts/**` but not `requirements/`, so the new committed-file tests fail when run from the sdist | open | incremental review 2026-11-17 |
+| WR-14 | warning | The `<0.14` upper bound makes the README's "uv 0.11 or later" offline build break on newer uv, and the widened lower bound is untested | open | incremental review 2026-11-17 |
+| IN-06 | info | README claims pip "uses the Windows trust store by default", which depends on the pip version in the new venv | open | incremental review 2026-11-17 |
+| IN-07 | info | The retry cap is enforced only in the settings layer, not in `GraphClient` | open | incremental review 2026-11-17 |
+| IN-08 | info | Lower-case concatenated forms of a multi-word name are not matched, and the real-digest test pins an exact count | open | incremental review 2026-11-17 |
+| IN-09 | info | A tracked file name that is not valid UTF-8 crashes the scanner with a traceback and exit code 1 | open | incremental review 2026-11-17 |
+| IN-10 | info | `generate()` can leave the two requirements files out of step, and a stale `.tmp` on failure | open | incremental review 2026-11-17 |
+| IN-11 | info | `build_steps(environ=...)` is a parameter that is deliberately ignored | open | incremental review 2026-11-17 |

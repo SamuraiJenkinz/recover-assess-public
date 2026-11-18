@@ -14,7 +14,7 @@ Granularity is `fine` (12 phases). The sample tier (C8 download, A1 classificati
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation, Contract & Read-Only Graph Client** - CI-enforced scaffold, generated fact-sheet v1.0 contract, and the single tested read-only path to Microsoft 365
+- [x] **Phase 1: Foundation, Contract & Read-Only Graph Client** - CI-enforced scaffold, generated fact-sheet v1.0 contract, and the single tested read-only path to Microsoft 365 (completed 2026-11-17)
 - [ ] **Phase 2: Walking Skeleton: Sign In, Doctor, Resolve & Collect One Site** - Thin end-to-end slice: delegated sign-in, `doctor`, resolve a site by URL, collect C1 into a schema-valid partial fact sheet
 - [ ] **Phase 3: Batch Intake & Site Structure (C2, C3)** - CSV batches, `--validate-only`, `grants plan`, libraries/lists/columns/content types, per-site run states
 - [ ] **Phase 4: Library Inventory & Folder Patterns (C4)** - Streaming drive-delta inventory, truncation/coverage disclosure, folder-pattern mining, `last_activity`, deterministic sample candidates
@@ -40,7 +40,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Under simulated throttling the client pages to the end (cap marks results `truncated`), sends `$batch` groups of <=20 and re-queues throttled sub-requests, honours Retry-After then jittered backoff (<=6 retries, 5-minute give-up), shares one throttle gate across sites, fails a site as `throttled_out` when its breaker trips, never exceeds 4 in-flight per site / 2 sites, and records `graph_stats`
   4. A log-capture test proves `run.jsonl` carries path template, status, duration, retries and request-id for every request and never contains response bodies, tokens or `downloadUrl` values
   5. Config precedence (defaults, YAML, `RECOVER_ASSESS__*` env, CLI flags) works and unknown keys or mistyped env vars are errors; `schemas/fact_sheet.schema.json` is generated from the pydantic models (provisional v1.0 with `privacy`, `collect_limits`, per-section `status`/`reason`, `coverage`, `truncated_reason`, `path_unresolved`, `hash_coverage`, `owners_source`, `last_activity` basis) and a drift test fails when models and schema diverge; an interrupted write leaves no half-written file; a repo scan finds no client-specific data, names, endpoints or themes
-**Plans:** 12/12 plans executed (waves: 1 = 01-01; 2 = 01-02, 01-03, 01-04, 01-11; 3 = 01-06, 01-12; 4 = 01-05, 01-07; 5 = 01-08; 6 = 01-09; 7 = 01-10)
+**Plans:** 12/12 plans complete (waves: 1 = 01-01; 2 = 01-02, 01-03, 01-04, 01-11; 3 = 01-06, 01-12; 4 = 01-05, 01-07; 5 = 01-08; 6 = 01-09; 7 = 01-10)
 
 Plans:
 **Wave 1**
@@ -228,7 +228,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation, Contract & Read-Only Graph Client | 12/12 | In Progress | - |
+| 1. Foundation, Contract & Read-Only Graph Client | 12/12 | Complete    | 2026-11-17 |
 | 2. Walking Skeleton: Sign In, Doctor, Resolve & Collect One Site | 0/TBD | Not started | - |
 | 3. Batch Intake & Site Structure (C2, C3) | 0/TBD | Not started | - |
 | 4. Library Inventory & Folder Patterns (C4) | 0/TBD | Not started | - |
